@@ -39,6 +39,20 @@ from mpl_toolkits.mplot3d import Axes3D
 #############################################################################
 
 #############################################################################
+#Number of halos in each case
+#############################################################################
+#serial: 1512
+#buff4: 2101
+#buff8: 2101
+#buff16: 1507
+#buff32: 1523
+#buff64: 2101
+#############################################################################
+#Seems clear that buff16 and buff32 perform better than the others...
+#############################################################################
+
+
+#############################################################################
 #reading serial data
 #############################################################################
 f=open('sod_00024.dat')
@@ -68,16 +82,16 @@ rp=[]
 cubep=[]
 from os import listdir
 from os.path import isfile, join
-path='/home/irene/Desktop/test SOD parallel/parallel/'
+#path='/home/irene/Desktop/test SOD parallel/parallel/'
 #alternate lines to read archived data
-#path='/home/irene/Desktop/test SOD parallel/parallel/buff16/'
+path='/home/irene/Desktop/test SOD parallel/parallel/buff16/'
 files = [join(path,f) for f in listdir(path) if isfile(join(path,f))]
 for name in files:
     f=open(name)
     lines=f.readlines()
     temp=re.findall(r"[\w']+",name)
-    tmp=temp[7]
-#    tmp=temp[8]
+#    tmp=temp[7]
+    tmp=temp[8]
     temp=tmp.split('_')
     cubeid=temp[2]
     for line in lines:
@@ -149,9 +163,12 @@ len(halo_ponly)
 #1114
 #32 cell buffer, don't take into account halos with center closer than 16 cells
 #1105
+#8 cell buffer:
+#1124
 
 #BUT
 #the number of halos found _only_ by pSOD increases with the buffer size (??)
+#no, not monotonic.
 #############################################################################
 
 #############################################################################
