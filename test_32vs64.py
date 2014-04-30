@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np 
 from mpl_toolkits.mplot3d import Axes3D
+from twins_fctn import twins
 
 #serial data
 f=open('sod_00024.dat')
@@ -25,7 +26,6 @@ xs=np.array(xs)
 ys=np.array(ys)
 zs=np.array(zs)
 rs=np.array(rs)
-
 
 #parallel data with a buffer of 32
 mp=[]
@@ -99,50 +99,46 @@ set1632=setp&setp16
 ############################################
 #Between serial and buffer=32
 ############################################
-#finding probable twins for each halo 
-#set of symmetric differences
-set_sonly=sets-setp
-msonly,xsonly,ysonly,zsonly,rsonly=zip(*set_sonly)
-set_ponly=setp-sets
-mponly,xponly,yponly,zponly,rponly=zip(*set_ponly)
+twins(sets,setp)
+#number of halos with a twin:  379
+#number of halos without a twin:  49
+#total number of halos:  428 428
+#largest difference in mass:  0.099173553719
+#largest difference in center:  0.85494018884
 
-twins=[]
-twinp=[]
-Mscore=[]
-Cscore=[]
-reject=[]
-for i in range(len(set_sonly)):
-    for j in range(len(set_ponly)):
-        tmpm=np.abs(msonly[i]-mponly[j])/msonly[i]
-        tmpc=np.sqrt((xsonly[i]-xponly[j])**2+(ysonly[i]-yponly[j])**2+(zsonly[i]-zponly[j])**2)/rsonly[i]
-#        if j==0:
-        if (tmpm <= 0.1 and tmpc <= 1):
-            Mscore.append(tmpm)
-            Cscore.append(tmpc)
-            twinp.append(j)
-            twins.append(i)
-        else:
-            if j==0:
-                tmpr=1
-            else:
-                tmpr=tmpr+1
-        if tmpr==len(set_ponly):
-            reject.append(i)
-#        else:
-#            if(tmpm<Mscore[-1] and tmpc<Cscore[-1]):
-#                Mscore[-1]=tmpm
-#                Cscore[-1]=tmpc
-#                twinp[-1]=j
+#the process is not symmetric !
+twins(setp,sets)
+#number of halos with a twin:  380
+#number of halos without a twin:  60
+#total number of halos:  439 440
+#largest difference in mass:  0.0923076923077
+#largest difference in center:  0.85365003765
 
-#around 50 halos have no twins.
-#the masses are in agreement to around 10% (good), and the center positions to 85% (!)            
 
-#for the rejected halos
-msonly=np.array(msonly)
-plt.hist(msonly[reject],bins=50)
-plt.show() 
-#all different halos (in serial) have masses below 220part.
-#most have masses around 100.
+############################################
+#Between serial and buffer=16
+############################################
+twins(sets,setp16)
+#number of halos with a twin:  386
+#number of halos without a twin:  75
+#total number of halos:  460 461
+#largest difference in mass:  0.1
+#largest difference in center:  0.868195865976
+
+twins(setp16,sets)
+#number of halos with a twin:  386
+#number of halos without a twin:  70
+#total number of halos:  455 456
+#largest difference in mass:  0.0990099009901
+#largest difference in center:  0.856971056172
+
+#So, the parallel version with buffer=32 seems to be closer to 
+#the serial version,
+#with 1084 exact twins, around 380 close twins
+#and only 50 halos with no conterpart (for a total number of 
+#halos: 1512 serial, 1523 parallel).
+#the halos with no conterparts have masses going only up to 
+#220 parts.
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
