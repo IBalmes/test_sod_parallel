@@ -84,7 +84,7 @@ from os import listdir
 from os.path import isfile, join
 #path='/home/irene/Desktop/test SOD parallel/parallel/'
 #alternate lines to read archived data
-path='/home/irene/Desktop/test SOD parallel/parallel/buff16/'
+path='/home/irene/Desktop/test SOD parallel/parallel/buff32/'
 files = [join(path,f) for f in listdir(path) if isfile(join(path,f))]
 for name in files:
     f=open(name)
@@ -246,8 +246,13 @@ rs[indmaxs],rp[indmaxp]
 #############################################################################
 #checking the mass function
 #############################################################################
-plt.hist(ms,bins=120,color='blue')
-plt.hist(mp,bins=120,color='red')
+a,b = np.histogram(np.log10(ms*1e12),bins=60)#,color='blue',label='SOD')
+ap,bp = np.histogram(np.log10(mp*1e12),bins=60)#,color='red',label='pSOD')
+plt.plot(b[:-1],a,color='blue',label='SOD')
+plt.plot(bp[:-1],ap,color='red',label='pSOD')
+plt.xlabel('$\log(M/M_\odot)$')
+plt.title('halo number counts')
+plt.legend()
 plt.show()
 #mostly similar, but there seems to be marginal differences in the masses of halos.
 #############################################################################
